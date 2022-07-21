@@ -23,7 +23,7 @@ public class mainController {
     }
 
     @GetMapping("/Centroid")
-    public modifiedData viewCentroidBased(){
+    public List<modifiedData> viewCentroidBased(){
         return retrieveData.getCentroidData();
     }
 }

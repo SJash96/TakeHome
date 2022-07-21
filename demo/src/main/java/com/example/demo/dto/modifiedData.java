@@ -5,6 +5,7 @@ import lombok.Data;
 @Data
 public class modifiedData {
     
-    private Integer income;
-    private Integer population;
+    private String from;
+    private Integer totalIncome;
+    private Integer totalPopulation;
 }
