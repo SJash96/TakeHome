@@ -27,7 +27,11 @@ public class retrieveData {
         return dataRepository.findAll();
     }
 
-    public List<modifiedData> getCentroidData() {
+    public List<sampleData> getCentroidData() {
+        return dataRepository.getCentroidBased();
+    }
+
+    public List<modifiedData> getCentroidDataCalculated() {
         List<sampleData> sampleDatas = dataRepository.getCentroidBased();
         List<modifiedData> modifiedDatasList = new ArrayList<>();
         modifiedData modifiedData = new modifiedData();
@@ -39,7 +43,7 @@ public class retrieveData {
         }
         modifiedData.setTotalIncome(modifiedData.getTotalIncome() / sampleDatas.size());
         modifiedData.setFrom("Database Query");
-        
+
         List<sampleData> sampleDatas2 = dataRepository.findAll();
         modifiedData modifiedData2 = new modifiedData();
         modifiedData2.setTotalPopulation(0);
@@ -47,7 +51,7 @@ public class retrieveData {
         for (sampleData sampleData : sampleDatas2) {
             Geometry point = new GeometryFactory().createPoint(new Coordinate(-96.781508, 33.045352)).buffer(0.02);
             boolean bool = sampleData.getSpatialObj().getCentroid().within(point);
-            if(bool){
+            if (bool) {
                 modifiedData2.setTotalPopulation(modifiedData2.getTotalPopulation() + sampleData.getPopulation());
                 modifiedData2.setTotalIncome(modifiedData2.getTotalIncome() + sampleData.getIncome());
             }
@@ -59,6 +63,5 @@ public class retrieveData {
         modifiedDatasList.add(modifiedData2);
         return modifiedDatasList;
     }
-
 
 }

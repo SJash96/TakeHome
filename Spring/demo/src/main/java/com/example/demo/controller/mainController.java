@@ -17,13 +17,18 @@ public class mainController {
     @Autowired
     private retrieveData retrieveData;
     
-    @GetMapping("/")
+    @GetMapping("/AllData")
     public List<sampleData> viewAllData() {
         return retrieveData.getAllData();
     }
 
-    @GetMapping("/Centroid")
-    public List<modifiedData> viewCentroidBased(){
+    @GetMapping("/CentroidData")
+    public List<sampleData> viewCentroidData() {
         return retrieveData.getCentroidData();
+    }
+
+    @GetMapping("/CentroidCalculated")
+    public List<modifiedData> viewCentroidBased(){
+        return retrieveData.getCentroidDataCalculated();
     }
 }
