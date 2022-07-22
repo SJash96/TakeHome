@@ -1,5 +1,3 @@
-# TakeHome
-
 To access, run as local and go to /Centroid for centroid based calculations. 
 Calculation is shown as Database Query (Accurate) and Java (Still in development, buffer measurements are innacurate)
 
