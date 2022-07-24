@@ -12,7 +12,7 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "dfw_demo")
-public class sampleData {
+public class modelData {
     
     @Id
     @Column(name = "\"Key\"")

@@ -9,7 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dto.modifiedData;
-import com.example.demo.model.sampleData;
+import com.example.demo.dto.frontend.coord;
+import com.example.demo.dto.frontend.frontendData;
+import com.example.demo.dto.frontend.spatObj;
+import com.example.demo.model.modelData;
 import com.example.demo.repository.dataRepository;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
@@ -23,32 +26,32 @@ public class retrieveData {
     @Autowired
     private dataRepository dataRepository;
 
-    public List<sampleData> getAllData() {
+    public List<modelData> getAllData() {
         return dataRepository.findAll();
     }
 
-    public List<sampleData> getCentroidData() {
+    public List<modelData> getCentroidData() {
         return dataRepository.getCentroidBased();
     }
 
     public List<modifiedData> getCentroidDataCalculated() {
-        List<sampleData> sampleDatas = dataRepository.getCentroidBased();
+        List<modelData> sampleDatas = dataRepository.getCentroidBased();
         List<modifiedData> modifiedDatasList = new ArrayList<>();
         modifiedData modifiedData = new modifiedData();
         modifiedData.setTotalPopulation(0);
         modifiedData.setTotalIncome(0);
-        for (sampleData sampleData : sampleDatas) {
+        for (modelData sampleData : sampleDatas) {
             modifiedData.setTotalPopulation(modifiedData.getTotalPopulation() + sampleData.getPopulation());
             modifiedData.setTotalIncome(modifiedData.getTotalIncome() + sampleData.getIncome());
         }
         modifiedData.setTotalIncome(modifiedData.getTotalIncome() / sampleDatas.size());
         modifiedData.setFrom("Database Query");
 
-        List<sampleData> sampleDatas2 = dataRepository.findAll();
+        List<modelData> sampleDatas2 = dataRepository.findAll();
         modifiedData modifiedData2 = new modifiedData();
         modifiedData2.setTotalPopulation(0);
         modifiedData2.setTotalIncome(0);
-        for (sampleData sampleData : sampleDatas2) {
+        for (modelData sampleData : sampleDatas2) {
             Geometry point = new GeometryFactory().createPoint(new Coordinate(-96.781508, 33.045352)).buffer(0.02);
             boolean bool = sampleData.getSpatialObj().getCentroid().within(point);
             if (bool) {
@@ -64,4 +67,25 @@ public class retrieveData {
         return modifiedDatasList;
     }
 
+    public List<frontendData> getDataFront(List<modelData> sampleDatas) {
+        List<frontendData> frontendDatas = new ArrayList<>();
+        for (modelData sampleData : sampleDatas) {
+            frontendData frontendData = new frontendData();
+            frontendData.setKey(sampleData.getKey());
+            frontendData.setIncome(sampleData.getIncome());
+            frontendData.setPopulation(sampleData.getPopulation());
+            spatObj spatObj = new spatObj();
+            List<coord> coords = new ArrayList<>();
+            for (Coordinate coordinate : sampleData.getSpatialObj().getCoordinates()) {
+                coord coord = new coord();
+                coord.setLat(coordinate.y);
+                coord.setLng(coordinate.x);
+                coords.add(coord);
+            }
+            spatObj.setCoordinates(coords);
+            frontendData.setSpatialObj(spatObj);
+            frontendDatas.add(frontendData);
+        }
+        return frontendDatas;
+    }
 }
