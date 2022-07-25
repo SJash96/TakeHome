@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import {
   Circle,
   GoogleMap,
+  InfoWindow,
   Marker,
   Polygon,
   useJsApiLoader,
@@ -15,6 +16,13 @@ interface Props {
 }
 
 const Map = (props: Props) => {
+  const [center, setCenter] = useState<any>({
+    lat: 32.776665,
+    lng: -96.796989,
+  });
+  const [openWindow, setOpenWindow] = useState(false);
+  const [windowData, setWindowData] = useState<any>(null);
+
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
     googleMapsApiKey: "AIzaSyAO8OYzLyQrnizNA_n3uEBXlQQ3AlhOgQQ",
@@ -25,9 +33,17 @@ const Map = (props: Props) => {
     height: "500px",
   };
 
-  const center = {
-    lat: 32.776665,
-    lng: -96.796989,
+  const polyMouseOver = (spatObj: any, e: any) => {
+    setWindowData({
+      data: spatObj,
+      lat: e.latLng.lat((data: any) => {
+        return data;
+      }),
+      lng: e.latLng.lng((data: any) => {
+        return data;
+      }),
+    });
+    setOpenWindow(true);
   };
 
   return (
@@ -38,6 +54,7 @@ const Map = (props: Props) => {
             mapContainerStyle={containerStyle}
             center={center}
             zoom={10}
+            onTilesLoaded={() => setCenter(null)}
           >
             {props.data.map((obj: any) =>
               props.isDots ? (
@@ -52,8 +69,26 @@ const Map = (props: Props) => {
                   />
                 </>
               ) : (
-                <Polygon key={obj.key} paths={obj.spatialObj.coordinates} />
+                <Polygon
+                  key={obj.key}
+                  paths={obj.spatialObj.coordinates}
+                  onMouseDown={(e) => polyMouseOver(obj, e)}
+                />
               )
+            )}
+            {openWindow && (
+              <InfoWindow
+                position={{
+                  lat: windowData.lat,
+                  lng: windowData.lng,
+                }}
+                onCloseClick={() => setOpenWindow(false)}
+              >
+                <div>
+                  <div>Total Income: {windowData.data.income}</div>
+                  <div>Total Population: {windowData.data.population}</div>
+                </div>
+              </InfoWindow>
             )}
           </GoogleMap>
         ) : (

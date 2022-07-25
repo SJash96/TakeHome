@@ -39,27 +39,27 @@ public class retrieveData {
         List<modifiedData> modifiedDatasList = new ArrayList<>();
         modifiedData modifiedData = new modifiedData();
         modifiedData.setTotalPopulation(0);
-        modifiedData.setTotalIncome(0);
+        modifiedData.setAverageIncome(0);
         for (modelData sampleData : sampleDatas) {
             modifiedData.setTotalPopulation(modifiedData.getTotalPopulation() + sampleData.getPopulation());
-            modifiedData.setTotalIncome(modifiedData.getTotalIncome() + sampleData.getIncome());
+            modifiedData.setAverageIncome(modifiedData.getAverageIncome() + sampleData.getIncome());
         }
-        modifiedData.setTotalIncome(modifiedData.getTotalIncome() / sampleDatas.size());
+        modifiedData.setAverageIncome(modifiedData.getAverageIncome() / sampleDatas.size());
         modifiedData.setFrom("Database Query");
 
         List<modelData> sampleDatas2 = dataRepository.findAll();
         modifiedData modifiedData2 = new modifiedData();
         modifiedData2.setTotalPopulation(0);
-        modifiedData2.setTotalIncome(0);
+        modifiedData2.setAverageIncome(0);
         for (modelData sampleData : sampleDatas2) {
             Geometry point = new GeometryFactory().createPoint(new Coordinate(-96.781508, 33.045352)).buffer(0.02);
             boolean bool = sampleData.getSpatialObj().getCentroid().within(point);
             if (bool) {
                 modifiedData2.setTotalPopulation(modifiedData2.getTotalPopulation() + sampleData.getPopulation());
-                modifiedData2.setTotalIncome(modifiedData2.getTotalIncome() + sampleData.getIncome());
+                modifiedData2.setAverageIncome(modifiedData2.getAverageIncome() + sampleData.getIncome());
             }
         }
-        modifiedData2.setTotalIncome(modifiedData2.getTotalIncome() / sampleDatas2.size());
+        modifiedData2.setAverageIncome(modifiedData2.getAverageIncome() / sampleDatas2.size());
         modifiedData2.setFrom("Java");
 
         modifiedDatasList.add(modifiedData);

@@ -6,6 +6,6 @@ import lombok.Data;
 public class modifiedData {
     
     private String from;
-    private Integer totalIncome;
+    private Integer averageIncome;
     private Integer totalPopulation;
 }
